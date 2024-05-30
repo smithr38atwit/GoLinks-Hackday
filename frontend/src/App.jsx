@@ -1,38 +1,64 @@
-import { useEffect } from 'react';
 import './App.css'
-import { Octokit } from "octokit"
 import { useState } from 'react';
-
+import { getReposInfo } from './scripts/api';
 
 function App() {
-  const [result, setResult] = useState([])
+  const [username, setUsername] = useState('')
+  const [numRepos, setNumRepos] = useState(null)
+  const [numForks, setNumForks] = useState(null)
+  const [languages, setLanguages] = useState(null)
 
-  const octokit = new Octokit({
-    auth: import.meta.env.VITE_API_KEY
-  });
+  const search = async (e) => {
+    e.preventDefault();
 
-  const search = async () => {
-    const response = await octokit.request('GET /search/repositories', {
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
-        'accept': 'application/vnd.github+json'
-      },
-      q: 'warehouse in:readme'
-    });
-    let arr = []
-    for (let item of response.data.items) {
-      arr.push(item.html_url);
+    // setNumRepos(null)
+    // setNumForks(null)
+    // setLanguages(null)
+
+    if (username == '') {
+      return;
     }
-    setResult(arr)
+
+    try {
+      const response = await getReposInfo(username);
+      const data = await response.json()
+
+      setNumRepos(data.repo_count)
+      setNumForks(data.forks_count)
+      setLanguages(data.language_counts)
+    } catch (error) {
+      console.error('Search error: ', error)
+    }
   }
-
-  useEffect(() => {
-    search();
-  }, [])
-
 
   return (
     <>
+      <h1>GoLinks Hackday - Info for Github User's Repos</h1>
+      <div className='input'>
+        <form className="search" onSubmit={search}>
+          <button type="submit">
+            <i className="fa-solid fa-magnifying-glass"></i>
+          </button>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </form>
+      </div>
+      <div className='results'>
+        <div className='repos'><span>Number of public repositories:</span>{numRepos && <span> {numRepos}</span>}</div>
+        <div className='forks'><span>Number of forked repositories:</span>{numForks && <span> {numForks}</span>}</div>
+        <div className='languages'>
+          <div>Languages used:</div>
+          <ol>
+            {languages && languages.map((lang, index) => (
+              <li key={index}>{lang[0]}: {lang[1]}</li>
+            ))}
+          </ol>
+        </div>
+      </div>
     </>
   )
 }

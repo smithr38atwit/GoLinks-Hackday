@@ -1,0 +1,60 @@
+h1 {
+    margin: 0;
+
+    color: #FFF;
+    font-size: 36px;
+}
+
+/* Input bar */
+
+.search {
+    display: flex;
+    width: 300px;
+    padding: 12px 16px;
+    gap: 8px;
+    align-items: center;
+    align-self: stretch;
+
+    border-radius: 4px;
+    background: #1E1F22;
+}
+
+.search>input {
+    padding: 0;
+    border: none;
+    background: none;
+    color: #FFF;
+    font-size: 16px;
+}
+
+.search>input:focus {
+    outline: none;
+}
+.search>input::placeholder {
+    color: #8F969F;
+    font-size: 16px;
+}
+.search>input:focus::placeholder {
+    color: transparent;
+}
+
+.search>button {
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+
+    color: #8F969F;
+}
+.search>button:hover {
+    color: #c9cfd7;
+}
+
+/* Main content */
+
+.results {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    font-size: 20px;
+}
